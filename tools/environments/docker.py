@@ -296,7 +296,7 @@ class DockerEnvironment(BaseEnvironment):
         volumes: list = None,
         forward_env: list[str] | None = None,
         env: dict | None = None,
-        network: bool = True,
+        network: bool | str = True,
         host_cwd: str = None,
         auto_mount_cwd: bool = False,
         run_as_host_user: bool = False,
@@ -334,7 +334,9 @@ class DockerEnvironment(BaseEnvironment):
                     "Docker storage driver does not support per-container disk limits "
                     "(requires overlay2 on XFS with pquota). Container will run without disk quota."
                 )
-        if not network:
+        if isinstance(network, str) and network.strip():
+            resource_args.extend(["--network", network.strip()])
+        elif not network:
             resource_args.append("--network=none")
 
         # Persistent workspace via bind mounts from a configurable host directory
