@@ -1031,6 +1031,14 @@ def init_agent(
     # broad pseudo-public config object on the agent instance.
     agent._aux_compression_context_length_config = None
 
+    # Browser persistence across turns (mirrors persistent_filesystem for VMs)
+    try:
+        agent._browser_persistent_sessions = bool(
+            _agent_cfg.get("browser", {}).get("persistent_sessions", False)
+        )
+    except Exception:
+        agent._browser_persistent_sessions = False
+
     # Persistent memory (MEMORY.md + USER.md) -- loaded from disk
     agent._memory_store = None
     agent._memory_enabled = False
